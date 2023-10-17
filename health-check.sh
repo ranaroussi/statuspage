@@ -17,8 +17,9 @@ while read -r line
 do
   echo "  $line"
   IFS='=' read -ra TOKENS <<< "$line"
+  IFS='|' read -ra VALUES <<< "$TOKENS[1]"
   KEYSARRAY+=(${TOKENS[0]})
-  URLSARRAY+=(${TOKENS[1]})
+  URLSARRAY+=(${VALUES[1]})
 done < "$urlsConfig"
 
 echo "***********************"
