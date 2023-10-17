@@ -12,7 +12,7 @@ async function genReportLog(container, key, url) {
   container.appendChild(statusStream);
 }
 
-function constructStatusStream(key, url, uptimeData) {
+function constructStatusStream(key, value, uptimeData) {
   let streamContainer = templatize("statusStreamContainerTemplate");
   for (var ii = maxDays - 1; ii >= 0; ii--) {
     let line = constructStatusLine(key, ii, uptimeData[ii]);
@@ -22,9 +22,11 @@ function constructStatusStream(key, url, uptimeData) {
   const lastSet = uptimeData[0];
   const color = getColor(lastSet);
 
+  value = value.split('|');
   const container = templatize("statusContainerTemplate", {
     title: key.replaceAll('_', ' '),
-    url: url,
+    url: value[0],
+    desc: value.length > 1 ? value[1] : value[0],
     color: color,
     status: getStatusText(color),
     upTime: uptimeData.upTime,
@@ -242,11 +244,11 @@ async function genAllReports() {
   const configLines = configText.split("\n");
   for (let ii = 0; ii < configLines.length; ii++) {
     const configLine = configLines[ii];
-    const [key, url] = configLine.split("=");
-    if (!key || !url) {
+    const [key, value] = configLine.split("=");
+    if (!key || !value) {
       continue;
     }
 
-    await genReportLog(document.getElementById("reports"), key, url);
+    await genReportLog(document.getElementById("reports"), key, value);
   }
 }
